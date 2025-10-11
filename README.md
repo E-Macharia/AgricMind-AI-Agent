@@ -71,9 +71,31 @@ AgriMind is an AI-powered chatbot designed to educate and advise on sustainable 
   - Body: `{"message": "Your question here"}`
   - Response: `{"response": "AI answer"}`
 
+## Deployment
+
+### Backend (Render)
+1. Push this repo to GitHub
+2. Go to [render.com](https://render.com) and sign up
+3. Create a new Web Service
+4. Connect your GitHub repo
+5. Set build command: `pip install -r requirements.txt`
+6. Set start command: `python main.py`
+7. Add environment variables: `OPENAI_API_KEY`, `SUPABASE_URL`, `SUPABASE_KEY`
+8. Deploy!
+
+### Frontend (Vercel)
+1. Create a new GitHub repo for the frontend
+2. Copy `frontend/` files to the new repo
+3. Update `script.js` API_BASE_URL to your Render backend URL
+4. Push to GitHub
+5. Go to [vercel.com](https://vercel.com) and sign up
+6. Import the frontend GitHub repo
+7. Deploy!
+
 ## Technologies Used
 
 - Backend: FastAPI (Python)
 - Frontend: HTML, CSS, JavaScript
 - AI: OpenAI API
 - Database: Supabase
+- Deployment: Render (backend), Vercel (frontend)
