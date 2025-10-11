@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // API base URL - change this for deployment
     const API_BASE_URL = window.location.origin.includes('localhost')
         ? 'http://localhost:8000'
-        : 'https://your-render-backend-url.onrender.com'; // Replace with actual Render URL
+        : 'https://agrimind-backend-43yp.onrender.com'; // Render backend URL
 
     // Function to add message to chat
     function addMessage(content, isUser = false) {
