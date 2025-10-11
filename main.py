@@ -43,6 +43,10 @@ SYSTEM_PROMPT = """
 You are AgriMind, an AI agricultural mentor. Your goal is to educate, advise, and guide users about soil health, sustainable farming, vegetation management, and climate-resilient agriculture. Use clear and actionable language. When possible, recommend specific sustainable practices (e.g., crop rotation, composting, organic fertilizers, or erosion control). Keep answers simple, practical, and regionally adaptable.
 """
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to AgriMind AI Agent API", "docs": "/docs", "chat": "/chat"}
+
 @app.post("/chat")
 async def chat(message: Message):
     try:
