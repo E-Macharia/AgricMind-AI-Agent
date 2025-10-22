@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import openai
+import google.generativeai as genai
 from supabase import create_client, Client
 from dotenv import load_dotenv
 import os
@@ -24,14 +24,15 @@ class Message(BaseModel):
     message: str
 
 # Load environment variables
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# Initialize OpenAI (optional)
-if OPENAI_API_KEY:
-    from openai import OpenAI
-    openai_client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize Google Gemini (optional)
+gemini_model = None
+if GOOGLE_API_KEY:
+    genai.configure(api_key=GOOGLE_API_KEY)
+    gemini_model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Initialize Supabase client (optional)
 supabase = None
@@ -50,25 +51,22 @@ async def root():
 @app.post("/chat")
 async def chat(message: Message):
     try:
-        if OPENAI_API_KEY:
+        if gemini_model:
             try:
-                # Call OpenAI API
-                response = openai_client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": message.message}
-                    ],
-                    max_tokens=500,
-                    temperature=0.7
+                # Call Google Gemini API
+                response = gemini_model.generate_content(
+                    f"{SYSTEM_PROMPT}\n\nUser: {message.message}\n\nProvide a helpful, practical response about sustainable farming:"
                 )
-                bot_response = response.choices[0].message.content.strip()
+                bot_response = response.text.strip()
             except Exception as e:
                 # Handle API errors (quota, etc.)
-                bot_response = f"OpenAI API error: {str(e)}. Please check your OpenAI account billing. For now, here's some general farming advice: Consider sustainable practices like crop rotation, composting, and organic fertilizers for better soil health."
+                bot_response = f"Google Gemini API error: {str(e)}. Please check your Google API key. For now, here's some general farming advice: Consider sustainable practices like crop rotation, composting, and organic fertilizers for better soil health."
+        elif GOOGLE_API_KEY:
+            # Fallback if model not initialized
+            bot_response = "AI service initializing. For your farming question, consider sustainable practices like crop rotation, composting, and organic fertilizers."
         else:
             # Mock response for demo
-            bot_response = "This is a demo response. To get real AI answers, please set up your OpenAI API key in the .env file. For your question about farming, consider sustainable practices like crop rotation and organic fertilizers."
+            bot_response = "This is a demo response. To get real AI answers, please set up your Google API key in the .env file. For your question about farming, consider sustainable practices like crop rotation and organic fertilizers."
 
         # Store chat in Supabase (optional, for learning content)
         if supabase:
