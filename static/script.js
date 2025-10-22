@@ -4,9 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chat-messages');
 
     // API base URL - change this for deployment
-    const API_BASE_URL = window.location.origin.includes('localhost')
-        ? 'http://localhost:8000'
-        : 'https://your-render-backend-url.onrender.com'; // Replace with actual Render URL
+    const API_BASE_URL = 'http://localhost:8000'; // Local backend for development
 
     // Function to add message to chat
     function addMessage(content, isUser = false) {
